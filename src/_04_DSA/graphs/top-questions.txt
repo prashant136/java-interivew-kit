@@ -1,0 +1,55 @@
+
+1–10: BFS / DFS fundamentals (build traversal + connectivity intuition)
+
+    Graph representation & traversal (adjacency list / matrix) — important setup + iterate neighbors. Hint: implement both representations and practice neighbor iteration. — Easy
+    Depth-first search (recursive + iterative) — basic _04_DSA.stack/recursion control. Hint: track visited and parent if needed. — Easy
+    Breadth-first search (levels, shortest unweighted path) — queue + visited + level tracking. Hint: push (node,dist) or size-loop. — Easy
+    Connected Components (undirected) — count components using DFS/BFS. Hint: loop over nodes & start search on unvisited. — Easy
+    Number of Islands (grid → graph mapping) — treat grid cells as nodes. Hint: DFS/BFS with 4-direction moves. — Easy–Medium
+    Bipartite Check (graph coloring) — two-color via BFS/DFS. Hint: color neighbors opposite; detect conflict. — Medium
+    Shortest Path in Unweighted Graph (multi-source BFS) — BFS from source(s). Hint: initialize queue with all sources for multi-source problems. — Medium
+    Path Existence / Find a Path (return actual path) — parent map during BFS/DFS then reconstruct. Hint: store parent when visiting neighbor. — Easy–Medium
+    All Paths from Source to Target (DAG / small _04_DSA.graphs) — _04_DSA.backtracking DFS enumerating paths. Hint: pruning for cycles; memoize for DAGs. — Medium
+    Flood Fill (grid color-region fill) — BFS/DFS; identical to island pattern with color change. Hint: careful with bounds and visited or in-place mark. — Easy
+
+11–20: Topological sort & DAG patterns
+
+    Topological Sort (DFS / Kahn's algorithm) — order nodes in DAG. Hint: use in-degree queue (Kahn) or postorder DFS. — Medium
+    Course Schedule I (can finish all courses?) — use topo sort / cycle detect. Hint: if topo contains all nodes → feasible. — Medium
+    Course Schedule II (return order) — Kahn’s or DFS postorder reversed. Hint: return topo order or empty if cycle. — Medium
+    Alien Dictionary (build topo from words) — infer ordering then topo. Hint: build graph of characters, detect ambiguity. — Hard
+    Minimum Height Trees (find roots producing min height) — use toplogical-like pruning (peeling leaves). Hint: repeatedly remove leaves. — Medium–Hard
+    Tasks Scheduling with prerequisites + time (longest path in DAG) — convert to longest path DP on topo order. Hint: DP along topo order. — Medium
+    Find Eventual Safe States (DAG cycle detection via colors) — reverse graph + topo or DFS coloring. Hint: nodes that lead to cycle are unsafe. — Medium
+    Course Schedule variants with constraints (parallel time slots) — scheduling using topo + resource constraints. Hint: simulate topo with capacity or priority. — Hard
+    Reconstruct Itinerary (Euler / lexicographic topo variant) — treat edges carefully for lexicographic path. Hint: use min-_04_DSA.heap + _04_DSA.backtracking (Hierholzer variant). — Medium–Hard
+    Graph Valid Tree (n nodes, n-1 edges & connected) — simple checks: edges == n-1 and connected. Hint: use DFS/BFS or union-find. — Easy–Medium
+
+21–30: Cycle detection & Union-Find (disjoint sets)
+
+    Cycle Detection in Undirected Graph (DFS parent-check or union-find) — detect back-edges. Hint: for undirected, skip parent when checking neighbor. — Easy–Medium
+    Cycle Detection in Directed Graph (DFS coloring) — three-state visited array (0/1/2). Hint: encountering a "visiting" node → cycle. — Medium
+    Union-Find (implement find + union + path compression + rank) — DSU fundamentals. Hint: implement both path compression and union by rank. — Easy–Medium
+    Number of Connected Components in Undirected Graph (DSU) — union edges and count unique roots. Hint: track component count as you union. — Easy
+    Redundant Connection (find extra edge making cycle) — union until union fails. Hint: the edge that connects two already-connected nodes is redundant. — Medium
+    Accounts Merge (emails → union-find by email strings) — cluster items by shared identifiers. Hint: map identifiers to owner and unify. — Medium–Hard
+    Equation Possible (2-SAT union-find variant / constraints) — apply union-find on equality relations. Hint: pair with inequality checks. — Medium
+    Graph Coloring / K-Colorability (small k) — _04_DSA.backtracking/graph coloring heuristics. Hint: use greedy + ordering heuristics for speed. — Hard
+    Detect Cycle + Return Cycle (directed) — DFS _04_DSA.stack to reconstruct cycle when found. Hint: keep recursion _04_DSA.stack and parent pointers. — Medium–Hard
+    Critical Connections / Bridges (Tarjan’s algorithm) — find edges whose removal increases components. Hint: low-link values via DFS. — Hard (pattern)
+
+31–36: Shortest paths — Dijkstra and related
+
+    Dijkstra’s Algorithm (single-source shortest path, non-negative weights) — priority queue. Hint: maintain dist array and relax edges. — Medium
+    Shortest Path with Path Reconstruction (store parent) — same as Dijkstra but track predecessor. Hint: reconstruct by following parent pointers. — Medium
+    Network Delay Time (multi-source / single-source variation) — Dijkstra on directed weighted graph. Hint: answer is max(dist) if all reachable. — Medium
+    Shortest Path in Grid with Weights (0-1 BFS for 0/1 weights, Dijkstra general) — pick algorithm based on weights. Hint: use deque for 0-1 BFS. — Medium–Hard
+    Bellman-Ford (detect negative cycle + shortest paths) — relax edges n-1 times, check n-th for negative cycle. Hint: use when negative weights exist. — Medium–Hard
+    Minimum Spanning Tree (Kruskal + Prim) — MST construction for undirected weighted _04_DSA.graphs. Hint: Kruskal uses union-find; Prim uses PQ. — Medium
+
+37–40: Grid problems (islands, flood-fill, multi-source, path-in-grid variants)
+
+    Number of Islands II (dynamic add-land operations) — online connectivity with union-find per addition. Hint: union with 4 neighbors when adding land. — Hard (pattern)
+    Max Area of Island / Largest Connected Component (grid) — DFS/BFS to compute component sizes. Hint: track max while exploring. — Easy–Medium
+    Rotting Oranges (multi-source BFS shortest time to spread) — BFS from initial rotten oranges. Hint: multi-source BFS with minute layers. — Easy–Medium
+    Shortest Path in Binary Matrix / Grid with Obstacles (A optional)* — BFS or A* for heuristics; return shortest steps. Hint: use BFS for unweighted; A* for speed with heuristic. — Medium–Hard

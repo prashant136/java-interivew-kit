@@ -1,0 +1,69 @@
+
+1–10: Foundations (recursion, traversal, simple transforms)
+        
+        Binary Tree Inorder / Preorder / Postorder Traversal — implement recursive + iterative. Hint: _04_DSA.stack for iterative. — Easy
+        Level Order Traversal (BFS) — return nodes level by level. Hint: queue + size loop. — Easy
+        Maximum Depth of Binary Tree — recursion depth/DFS. Hint: return 1 + max(left, right). — Easy
+        Minimum Depth of Binary Tree — careful with one-child nodes. Hint: treat null-child differently. — Easy
+        Count Nodes in Binary Tree — traverse and count; try O(1) extra space. — Easy
+        Sum of All Nodes / Root-to-Leaf Sum Variants — accumulate during DFS. — Easy
+        Check if Two Trees are Identical — simultaneous recursion. — Easy
+        Invert/Flip Binary Tree — swap children recursively/iteratively. — Easy
+        Path Sum (root-to-leaf equals target) — _04_DSA.backtracking with running sum. — Easy
+        Root-to-Leaf Paths (return all paths) — DFS with path list + backtrack. — Easy–Medium
+    
+11–20: BST basics + shape/structure questions
+
+        Validate Binary Search Tree (BST) — range-check recursion. Hint: pass min/max bounds. — Medium
+        Lowest Common Ancestor (LCA) — Binary Tree — recursion returning node or null. — Medium
+        Lowest Common Ancestor — BST (optimized) — use BST ordering. — Easy–Medium
+        Convert Sorted Array to BST (balanced) — build mid as root. — Easy
+        Convert Sorted List to BST — slow/fast mid-finder or in-order simulation. — Medium
+        Search in a BST — iterative or recursion by value. — Easy
+        Insert/Delete in BST — pointer adjustments + successor for delete. — Medium
+        Kth Smallest / Largest in BST — inorder traversal with counter. — Medium
+        Range Sum in BST — prune branches using BST property. — Easy–Medium
+        Recover Binary Search Tree (two nodes swapped) — detect two misplaced nodes via inorder. — Hard (pattern)
+
+21–30: Tree DP / structural measures / tricky traversals
+
+        Diameter of Binary Tree — return height and update global diameter. Hint: single DFS. — Medium
+        Balanced Binary Tree (check height difference) — bottom-up recursion returning -1 for unbalanced. — Easy–Medium
+        Serialize and Deserialize Binary Tree — design a scheme (preorder + null markers). — Hard (practical)
+        Binary Tree Maximum Path Sum — path might go through node; track max via two-values. — Hard
+        Tilt of a Binary Tree — subtree sums with single pass. — Easy
+        Populating Next Right Pointers (perfect tree) — use next pointers or level traversal. — Medium
+        Populating Next Right Pointers (any binary tree) — use queue or next-pointer chain. — Hard (pattern)
+        All Nodes Distance K in Binary Tree — convert to graph or parent-pointer + BFS. — Medium–Hard
+        Binary Tree Zigzag Level Order — alternate direction per level. Hint: deque or reverse per level. — Medium
+        Find Leaves of Binary Tree (group by removal rounds) — compute node “height” (distance to leaf). — Medium
+
+31–40: Advanced patterns, transforms, and applications
+
+        Serialize/Deserialize N-ary Tree — generalize binary approach with child counts. — Medium
+        Tree to Doubly Linked List (in-order) — threaded-like transformation, keep prev pointer. — Medium
+        Construct Binary Tree from Preorder + Inorder — use indices/maps to slice. — Medium
+        Construct Binary Tree from Inorder + Postorder — mirror of above. — Medium
+        Unique Binary Search Trees (count / generate) — Catalan numbers / _04_DSA.backtracking generation. — Medium
+        Binary Tree Cameras (minimum cameras to monitor) — greedy DFS with states (covered/has camera/needs). — Hard (pattern)
+        Closest Leaf in a Binary Tree — parent pointers + BFS from target node. — Medium
+        Maximum Width of Binary Tree — index nodes like _04_DSA.heap to compute width. — Medium
+        Serialize Tree to Level Order String & Deserialize (robust) — handle nulls, streaming-friendly. — Medium
+        Dynamic Programming on Trees (tree DP examples: sum-of-distances, subtree sizes) — compute subtree info then reroot technique. — Hard (essential pattern)
+
+How to use this list — step-by-step practice routine
+
+        Do problems in order. Start with 1–10 until you’re fluent with recursion/DFS/BFS and can write iterative equivalents.
+        For 11–20, focus on BST properties and building _04_DSA.trees from arrays/lists. Time yourself (30–60 min per medium).
+        21–30 are pattern-heavy (diameter, path-sum, serialize). For each, write 2 solutions: straightforward and optimized.
+        31–40 are advanced; treat them as weekly deep-dives. Read editorial, then re-implement from scratch next day.
+        For each problem: write plain recursion first, then optimize to iterative/DP when applicable. Add unit tests (small _04_DSA.trees + edge cases).
+        Track variants: many interview questions are shuffled variants — practice 2–3 near-duplicates to generalize the pattern.
+
+Hints & common pitfalls (quick)
+
+        For min-depth: don't do min(left, right) when one child is null — handle null specially.
+        For BST problems: always consider duplicates and how the problem defines ordering.
+        For diameter / path-sum: use global variable updated during DFS; return height to parent.
+        For serialize/deserialize: choose a format (preorder + # for null) and be consistent.
+        For tree-to-_04_DSA.linked-list: be careful with pointers (prev, head) and in-order traversal.
