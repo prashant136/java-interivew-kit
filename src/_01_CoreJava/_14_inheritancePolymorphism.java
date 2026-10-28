@@ -86,7 +86,7 @@ class Vahan {
     }
 }
 
-class Car extends Vahan {
+class Mercedes extends Vahan {
 
 }
 
@@ -101,7 +101,7 @@ class PolymorphismMain {
         Vahan vahan = new Vahan();
         vahan.description();
 
-        Car car = new Car();
+        Mercedes car = new Mercedes();
         car.description();      // since description method Vahan class se inherit ho rha hai.
 
         Bike bike = new Bike();
