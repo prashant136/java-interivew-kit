@@ -4,142 +4,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class Employee3 {
-    String name;
-    String department;
-    int salary;
-    int age;
-
-    public Employee3(String name, String department, int salary, int age) {
-        this.name = name;
-        this.department = department;
-        this.salary = salary;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getSalary() {
-        return salary;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public int getAge() {
-        return age;
-    }
-    
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "name='" + name + '\'' +
-                ", department='" + department + '\'' +
-                ", salary=" + salary +
-                '}';
-    }
-}
-
-class Transaction {
-    String category;
-    int amount;
-
-    public Transaction(String category, int amount) {
-        this.category = category;
-        this.amount = amount;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-    
-    public int getAmount() {
-        return amount;
-    }
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "category='" + category + '\'' +
-                ", amount=" + amount +
-                '}';
-    }
-}
-
-
 // there is no need of public static void main(String args[]) { .... } in java 25
 // you can write simply     void main() { .... }
 
 
 class StreamQuestion {
-    // 4. Find the first number greater than 10 (sorted)
-    public Optional<Integer> findFirstGreaterThanTen(List<Integer> nums) {
-        return nums.stream()
-                .filter(x -> x > 10)
-                .sorted()
-                .findFirst();
+    /// [ REMEMBER ] -------------------- String Comparison ------------------
+    /// 1. string by length                 ::  .sorted(Integer.compare(a.length(), b.length()))
+    /// 2. string by length (reverse)       ::  .sorted(Integer.compare(b.length(), a.length()))
+    /// 3. alphabetically (a - z)           ::  .sorted((a, b) -> a.compareTo(b))
+    /// 4. alphabetically reverse (z - a)   ::  .sorted((a, b) -> b.compareTo(a))
+
+    /// 0. Find maximum number in list
+     public void findMaxNumber() {
+         List<Integer> nums = IntStream.rangeClosed(1, 100).boxed().collect(Collectors.toList());
+         nums.stream()
+                .reduce(Integer::max);
     }
-
-    // 5. Count numbers greater than 10
-    public long countGreaterThanTen(List<Integer> nums) {
-        return nums.stream()
-                .filter(x -> x > 10)
-                .count();
-    }
-
-    // 6a. Sum of all elements
-    public int calculateSum(List<Integer> nums) {
-        return nums.stream()
-                .reduce(0, (a, b) -> a + b);
-    }
-
-    // 6b. Product of all elements
-    public int calculateProduct(List<Integer> nums) {
-        return nums.stream()
-                .reduce(1, (a, b) -> a * b);
-    }
-
-    // 7. Sum of even elements
-    public int sumOfEvenNumbers(List<Integer> nums) {
-        return nums.stream()
-                .filter(x -> x % 2 == 0)
-                .reduce(0, (a, b) -> a + b);
-    }
-
-    // 8. Find maximum number in list
-    public Optional<Integer> findMaxNumber(List<Integer> nums) {
-        return nums.stream()
-                .reduce(Integer::max); // Safe reduce without default 0 seed (handles negative numbers correctly)
-    }
-
-    // 9. Find all distinct element from list (remove duplicates)
-    public Set<Integer> removeDuplicate(List<Integer> nums) {
-//        return new HashSet<>(nums);
-        return nums.stream().collect(Collectors.toSet());
-
-//        return nums.stream().distinct().toList();  // return List<Integer>
-    }
-
-    // 10. Find the avg of list
-    public Integer avgOfList(List<Integer> nums) {
-        return 0;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /// 1. find the all distinct elements from a list (remove duplicates)
     public void findAllDistinctElementFromList() {
@@ -373,14 +254,297 @@ class StreamQuestion {
         System.out.println("group by department: " + ans);
     }
 
+/// 16. Find the first number greater than 10 (sorted)
+    public void findFirstGreaterThanTen() {
+        List<Integer> nums = List.of(2, 19, 10, 12, 5, 12, 2, 7);
+        int ans = nums.stream()
+                .filter(x -> x > 10)
+                .sorted()
+                .findFirst()
+                .orElse(-1);
+        System.out.println("findFirstGreaterThanTen: " + ans);
+    }
+
+/// 17. we have list of String. Find the longest string in a list.
+    public void findtheLongestString() {
+        List<String> list = Arrays.asList("Java", "SpringBoot", "API");
+
+        Optional<String> ans = list.stream()
+                .max((a, b) -> Integer.compare(a.length(), b.length()));
+        System.out.println("findtheLongestString: " + ans.get());
+    }
+
+/// 18. find first employee whose salary is greater than 50000
+    public void findEmployeeWhoseSalaryGrter50000() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        Employee3 ans = employees.stream()
+                .filter(emp -> emp.getSalary() > 50000)
+                .findFirst()
+                .orElse(new Employee3("No one", "", 0, 0));
+        System.out.println("salary greater than 50000: " + ans);
+
+        employees.stream()
+                .filter(emp -> emp.getSalary() > 50000)
+                .findFirst()
+                .ifPresent(emp -> System.out.println("salary greater than 50000: " + emp.getSalary()));
+    }
+
+/// 19. find top 2 highest paid employees
+    public void top2HighestSalariedEmployee() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        List<Employee3> ans = employees.stream()
+                .sorted((a, b) -> Integer.compare(b.getSalary(), a.getSalary()))
+                .limit(2)
+                .toList();
+        System.out.println("top2HighestSalariedEmployee: " + ans);
+    }
+
+/// 20. Sort employees by salary, then by name (if salary is same sort them basis of their name)
+    public void sortBySalaryThenByName() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        List<Employee3> ans = employees.stream()
+                .sorted((e1, e2) -> {
+                    if(e1.getSalary() != e2.getSalary()) {
+                        return Integer.compare(e1.getSalary(), e2.getSalary());
+                    }
+                    // alphabetically sort by their name
+                    return e1.getName().compareTo(e2.getName());
+                })
+                .toList();
+        System.out.println("sortBySalaryThenByName: " + ans);
+    }
+
+/// 21. count how many employees are in each department
+    public void countEmployeeEachDepartment() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        Map<String, Long> res = employees.stream()
+                .collect(Collectors.groupingBy(emp -> emp.getDepartment(), Collectors.counting()));
+        System.out.println("countEmployeeEachDepartment: " + res);
+    }
+
+/// 22. find total transaction amount per category
+    public void totalTransactionPerCategory() {
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction("Food", 100),
+                new Transaction("Food", 200),
+                new Transaction("Food", 150),
+                new Transaction("Shopping", 300),
+                new Transaction("Shopping", 250),
+                new Transaction("Shopping", 100),
+                new Transaction("Utilities", 400),
+                new Transaction("Utilities", 300),
+                new Transaction("Entertainment", 500),
+                new Transaction("Entertainment", 200),
+                new Transaction("Travel", 700),
+                new Transaction("Travel", 300)
+        );
+
+        Map<String, Integer> ans = transactions.stream()
+                .collect(Collectors.groupingBy(txn -> txn.getCategory(), Collectors.summingInt(txn -> txn.getAmount())));
+        System.out.println("totalTransactionPerCategory: " + ans);
+    }
+
+/// 23. find the average salary of employees in each department
+    public void averageSalaryPerDepartment() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        Map<String, Double> res = employees.stream()
+                .collect(Collectors.groupingBy(emp -> emp.getDepartment(), Collectors.averagingInt(emp -> emp.getSalary())));
+        System.out.println("averageSalaryPerDepartment: " + res);
+    }
+
+/// 24. find highest paid employee in each department
+    public void highestSalariedEmployeeEachDepartment() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        Map<String, Optional<Employee3>> ans = employees.stream()
+                .collect(Collectors.groupingBy(emp -> emp.getDepartment(), Collectors.maxBy((e1, e2) -> Integer.compare(e1.getSalary(), e2.getSalary()))));
+        System.out.println("highestSalariedEmployeeEachDepartment: " + ans);
+
+        // will see another way ---
+    }
+
+/// 25. convert the list into a comma-separated string of Employee names.
+    public void commaSeparatedEmployeeName() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        String ans = employees.stream()
+                .map(Employee3::getName)
+                .collect(Collectors.joining(", "));
+        System.out.println("commaSeparatedEmployeeName: " + ans);
+    }
+
+/// 26. Given two list, find common elements between them.
+    public void findCommonElement() {
+        List<Integer> list1 = Arrays.asList(1,2,3,4);
+        List<Integer> list2 = Arrays.asList(3,4,5,6);
+
+        // use hashSet for faster lookups (applicable for large data set)
+        Set<Integer> set = new HashSet<>(list1);
+
+        List<Integer> common = list2.stream()
+                .filter(x -> set.contains(x))
+                .toList();
+        System.out.println("findCommonElement: " + common);
+
+    }
+
+/// 27. convert into single list with all the elements. remove duplicates if any.
+    public void convertIntoSingleList() {
+        List<List<Integer>> listOfList = Arrays.asList(
+                Arrays.asList(1,2,3,4),
+                Arrays.asList(3,4,5,6),
+                Arrays.asList(7,8,1,2),
+                Arrays.asList(9,10,5,6),
+                Arrays.asList(11,12,7,8)
+        );
+
+        List<Integer> ans = listOfList.stream()
+                .flatMap(list -> list.stream())
+                .distinct()
+                .toList();
+        System.out.println("list: " + ans);
+    }
+
+/// 28. In the below code, find error ?
+    public void findError() {
+//        List<Integer> list = new ArrayList<>();       // list is not thread safe.
+//        IntStream.range(1, 1000)
+//                .parallel()
+//                .forEach(ele -> list.add(ele);
+
+// correct code ???
+    }
+
+
+/// 29. in employee list. print all employee names, order doesn't matter but operation should be very fast. use parallelStream
+    public void printEmployeeVeryFast() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        employees.parallelStream()
+                .map(Employee3::getName)
+                .forEach(System.out::println);   // ordered doesn't matter
+
+//        employees.parallelStream()
+//                .map(Employee3::getName)
+//                .forEachOrdered(System.out::println);   // ordered list
+    }
+
+/// 30. compute total combined salary of all Employee. Operation should be very fast
+    public void combinedSalaryOfEmployeesVeryFast() {
+        List<Employee3> employees = new ArrayList<>(Arrays.asList(
+                new Employee3("Abhishek", "IT", 50000, 29),
+                new Employee3("Ankit", "IT", 70000, 26),
+                new Employee3("Rahul", "HR", 40000, 28),
+                new Employee3("Tina", "HR", 45000, 31),
+                new Employee3("Esha", "Finance", 60000, 27),
+                new Employee3("Sanchit", "IT", 80000, 30),
+                new Employee3("Pushpa", "Marketing", 50000, 31),
+                new Employee3("Sumit", "Marketing", 52000, 26)
+        ));
+
+        int ans = employees.parallelStream()
+                .map(Employee3::getSalary)
+                .reduce(0, (a, b) -> a + b);
+        System.out.println("combinedSalaryOfEmployeesVeryFast: " + ans);
+    }
+
+/// 30. grouping by string length
+    public void groupbyStringLength() {
+        List<String> list = List.of("java", "aws", "springboot", "you", "four");
+
+        // Length ke basis par group karna
+        Map<Integer, List<String>> result = list.stream()
+                .collect(Collectors.groupingBy(str -> str.length()));
+        System.out.println("grouping: " + result);
+    }
+
 
     void main() {
+        findMaxNumber();
         findAllDistinctElementFromList();
         findTheAvg();
         sortTheListInAscendingAndDescendingOrder();
         countStringStartWithASpecificLatter();
         joinCommaSeparatedString();
         checkAllPositives();
+        flattenList();
         checkAnyNumberDivisibleBy3();
         findNonEmptyString();
         fifthLargestNumber();
@@ -390,165 +554,25 @@ class StreamQuestion {
         partitionByEvenOrOdd();
         countOccurrences();
         groupingByBasedDepartment();
+        findFirstGreaterThanTen();
+        findtheLongestString();
 
+        findEmployeeWhoseSalaryGrter50000();
+        top2HighestSalariedEmployee();
+        sortBySalaryThenByName();
+        countEmployeeEachDepartment();
+        averageSalaryPerDepartment();
+        highestSalariedEmployeeEachDepartment();
+        commaSeparatedEmployeeName();
 
+        findCommonElement();
+        convertIntoSingleList();
+        findError();
+        printEmployeeVeryFast();
+        combinedSalaryOfEmployeesVeryFast();
+        groupbyStringLength();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -------- 1. Given a list of integer, remove duplicates and sort them in descending order.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(3, 3, 1, 3, 2, 5, 4));
-//        List<Integer> result = list.stream()
-//                .distinct()
-//                .sorted(Comparator.reverseOrder())
-//                .collect(Collectors.toList());
-//        System.out.println(result);
-
-
-// ------- 2. from a list of integer, find all the odd number and return their squares.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
-//        List<Integer> result = list.stream()
-//                .filter(ele -> ele % 2 != 0)
-//                .map(ele -> ele * ele)
-//                .collect(Collectors.toList());
-//        System.out.println(result);
-
-
-// ------- 3. we have list of integer. get 2nd , 3rd element form it and return them.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(10, 20, 30, 40, 50));
-//        List<Integer> result = list.stream()
-//                .skip(1)
-//                .limit(2)
-//                .collect(Collectors.toList());
-//        System.out.println(result);
-
-
-// -------- 4. we have list of integer. Find the second-highest number in the list.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(20, 10, 10, 45, 30, 45, 5, 20));
-//        Optional<Integer> res = list.stream()
-//                .distinct()  // [20, 10, 45, 30, 5]
-//                .sorted(Comparator.reverseOrder()) // [45, 30, 20, 10, 5]
-//                .skip(1)
-//                .findFirst();
-//        System.out.println(res.isPresent() ? res.get(): "throw exception");
-        // orElseThrow - ???
-
-
-// -------- 5. we have list of integer. divide numbers into even or odd.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(1,2,3,4,5));
-//        Map<Boolean, List<Integer>> result = list.stream()
-//                .collect(Collectors.partitioningBy(x -> x % 2 == 0));
-//        System.out.println(result);
-
-
-// -------- 6. we have list of strings. find the longest string in list.
-
-//        List<String> list = new ArrayList<>(Arrays.asList("Java", "Spring Boot", "Api"));
-//        Optional<String> max = list.stream()
-//                .max(Comparator.comparing(elem -> elem.length()));
-//        System.out.println(max.isPresent() ? max.get(): "");    // or, max.orElse("")
-
-//        list.stream()
-//                .max(Comparator.comparing(elem -> elem.length()))
-//                .ifPresent(System.out::println);
-
-// -------- 7. from the list of employees, find the first employee whose salary is greater than 50000.
-//        List<Employee3> employees = new ArrayList<>(Arrays.asList(
-//                new Employee3("Abhishek", "IT", 50000),
-//                new Employee3("Ankit", "IT", 70000),
-//                new Employee3("Rahul", "HR", 40000),
-//                new Employee3("Tina", "HR", 45000),
-//                new Employee3("Esha", "Finance", 60000),
-//                new Employee3("Naman", "Finance", 45000),
-//                new Employee3("Sachit", "IT", 80000)
-//        ));
-
-//        employees.stream()
-//                .filter(emp -> emp.getSalary() > 50000)
-//                .findFirst()
-//                .ifPresent(System.out::println);
-
-// -------- 8. from employee list, find top 2 highest paid employee
-//        List<Employee> result = employees.stream()
-//                .sorted((e1, e2) -> e2.getSalary() - e1.getSalary())      // integer overflow issue aa sakta hai.
-//                .limit(2)
-//                .toList();
-// OR,
-//        List<Employee> result = employees.stream()
-//                .sorted(Comparator.comparing(Employee::getSalary).reversed())
-//                .limit(2)
-//                .toList();
-// OR,
-//        List<Employee3> result = employees.stream()
-//                .sorted((e1, e2) -> Integer.compare(e2.getSalary(), e1.getSalary()))
-////                .limit(2)
-//                .toList();
-//
-//        System.out.println(result);
-
-
-
-// -------- 8. from emp list, sort employee by salary desc then by name if salaries are equal.
-
-//        List<Employee> list = employees.stream()
-//                .sorted((e1, e2) -> {
-//                    if (e1.getSalary() > e2.getSalary()) {
-//                        return -1;  // desc order
-//                    } else if (e1.getSalary() < e2.getSalary()) {
-//                        return 1;
-//                    } else {
-//                        // Do strings ko aapas me alphabetically compare ASC order me.
-//                        // jaise: [ "Banana", "Apple", "Cherry" ] ka [Apple, Banana, Cherry]
-//                        // (str1, str2) -> str1.compareTo(str2) & iska reverse krna hoto
-//                        // (str1, str2) -> str2.compareTo(str1)
-//                        // ye compareTo() method Comparable<String> se aaya hai.
-//                        return e1.getName().compareTo(e2.getName());
-//                    }
-//                }).toList();
-//
-//        System.out.println(list);
-
-// -------- 9. we have list of integer. find frequency of each element.
-
-//        List<Integer> list = new ArrayList<>(Arrays.asList(3, 2, 3, 4, 4, 1, 2, 1, 1, 1, 5, 6, 5));
-//        Map<Integer, Long> result = list.stream()
-//                .collect(Collectors.groupingBy(ele -> ele, Collectors.counting()));
-// OR,
-//        Map<Integer, Integer> result = list.stream()
-//                .distinct() // Pehle saare unique numbers nikaale [3, 2, 4, 1, 5, 6]
-//                .collect(Collectors.toMap(
-//                        element -> element,
-//                        element -> Collections.frequency(list, element)
-//                ));
-//        System.out.println(result);
-
-
-
-
+    }
 // ----------------------------------------------------------------------------------------------
 //        List<Employee> employees = List.of(
 //                new Employee(1, "Kaitlyn"),
@@ -564,142 +588,88 @@ class StreamQuestion {
 //                        (existingName, newName) -> existingName + ", " + newName  // merge function collision ko prevent karega.
 //                ));
 // --------------------------------------------------------------------------------------------------
+}
 
+class Employee3 {
+    String name;
+    String department;
+    int salary;
+    int age;
 
+    public Employee3(String name, String department, int salary, int age) {
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+        this.age = age;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public int getSalary() {
+        return salary;
+    }
 
-// -------- 10. from employee list, find how many employee are in department.
-//        Map<String, Long> result = employees.stream()
-//                .collect(Collectors.groupingBy(ele -> ele.getDepartment(), Collectors.counting()));
-//        System.out.println(result);
+    public String getDepartment() {
+        return department;
+    }
 
+    public int getAge() {
+        return age;
+    }
 
-
-// -------- 11. given a list of transactions, find total transaction amount per category.
-        List<Transaction> transactions = Arrays.asList(
-                new Transaction("Food", 100),
-                new Transaction("Food", 200),
-                new Transaction("Food", 150),
-                new Transaction("Shopping", 300),
-                new Transaction("Shopping", 250),
-                new Transaction("Shopping", 100),
-                new Transaction("Utilities", 400),
-                new Transaction("Utilities", 300),
-                new Transaction("Entertainment", 500),
-                new Transaction("Entertainment", 200),
-                new Transaction("Travel", 700),
-                new Transaction("Travel", 300)
-        );
-//        Map<String, Integer> result = transactions.stream()
-//                .collect(Collectors.groupingBy((txn -> txn.getCategory()),
-//                        Collectors.summingInt(txn -> txn.getAmount())));
-//
-//        System.out.println(result);
-
-
-
-// -------- 12. from list of employee, find avg salary of employee in each department
-//        Map<String, Double> result = employees.stream()
-//                .collect(Collectors.groupingBy(emp -> emp.getDepartment(),
-//                        Collectors.averagingInt(emp -> emp.getSalary())));
-//
-//        System.out.println(result);
-
-// -------- 13. from list of employee, find highest paid employee in each department
-
-//        Map<String, Optional<Employee>> result = employees.stream()
-//                .collect(Collectors.groupingBy(emp -> emp.getDepartment(),
-//                        Collectors.maxBy(Comparator.comparingInt(emp -> emp.getSalary()))));
-//
-//        System.out.println(result);
-
-
-// -------- 14. in employee list, convert a list into comma-separated string of employee name
-//        String result = employees.stream()
-//                .map(emp -> emp.getName())
-//                .collect(Collectors.joining(","));
-//        System.out.println(result);
-
-
-// -------- 15. Given two lists, find the common elements b/w them
-//        List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
-//        List<Integer> list2 = new ArrayList<>(Arrays.asList(3, 4, 5, 6));
-
-//        List<Integer> result = list2.stream()
-//                .filter(e -> list1.contains(e))
-//                .toList();
-//        System.out.println(result);
-
-        // better way -
-//        Set<Integer> set = new HashSet<>(list1);
-//        List<Integer> result = list2.stream()
-//                .filter(e -> set.contains(e))
-//                .toList();
-//        System.out.println(result);
-
-
-// -------- 17. you have list of list. convert it into a single list with all the elements. remove duplicates if any.
-        List<List<Integer>> listOfList = Arrays.asList(
-                Arrays.asList(1, 2, 3, 4),
-                Arrays.asList(3, 4, 5, 6),
-                Arrays.asList(7, 8, 1, 2),
-                Arrays.asList(9, 10, 5, 6),
-                Arrays.asList(11, 12, 7, 8)
-        );
-
-//
-//        List<Integer> result = listOfList.stream()
-//                .flatMap(innerList -> innerList.stream())
-//                .distinct()
-//                .toList();
-//        System.out.println(result);
-
-        /// flatmap() takes multiple stream and converts them into a single stream.
-        /// we iterate listOfList. flatmap have five different $04DSA.streams, here five inner list (five different $04DSA.streams).
-        /// the job of flatmaop -> (it takes multiple $04DSA.streams, then it converts them in single $04DSA.streams)
-        /// [[1,2,3,4], [3,4,5,6], [7,8,1,2], [9,10 5,6], [11,12,7,8]] -> [[1,2,3,4 3,4,5, 6,7,8,1,2,9,10,5,6,11,12,7,8]]
-
-
-
-// -------- 16. form employee list, print all employee name, their order doesn't matter but the operation should be very fast.
-        ///  you should think of multiple threads (order doesn't matter and very fast)
-//        employees.parallelStream()
-//                .map(Employee::getName)
-//                .forEach(System.out::println);
-
-
-// -------- 17. find error  ?? -
-//        List<Integer> list = new ArrayList<>();
-//        IntStream.range(1, 1000)
-//                .parallel()
-//                .forEach(ele -> list.add(ele));
-
-
-// -------- 18. form employee list, computer total combined salary of all employees. name. operation should be very fast.
-//
-//        Integer total = employees.parallelStream()
-//                .map(emp -> emp.getSalary())
-//                .reduce(0, (a, b) -> a + b);
-//        System.out.println(total);
-
-
-
-// -------- 19. we have list of integer. divide numbers into even or odd.
-
-
-
-
-// -------- 16. we have list of integer. divide numbers into even or odd.
-
-
-
-
-//        findFirstGreaterThanTen(nums).ifPresent(val -> System.out.println("First number > 10 (sorted): " + val));
-//        System.out.println("Count > 10: " + countGreaterThanTen(nums));
-//        System.out.println("Sum: " + calculateSum(nums));
-//        System.out.println("Product: " + calculateProduct(nums));
-//        System.out.println("Sum of Even Numbers: " + sumOfEvenNumbers(nums));
-//        findMaxNumber(nums).ifPresent(max -> System.out.println("Max Number: " + max));
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + '\'' +
+                ", department='" + department + '\'' +
+                ", salary=" + salary +
+                '}';
     }
 }
+
+class Transaction {
+    String category;
+    int amount;
+
+    public Transaction(String category, int amount) {
+        this.category = category;
+        this.amount = amount;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "category='" + category + '\'' +
+                ", amount=" + amount +
+                '}';
+    }
+}
+
+
+/// why functional interface introduced in java 8, type - 4 type
+/// Intermediate statefull, stetefull dono hai, lazily
+/// Terminal terminal op - eager
+
+/// odd, evem print 2 Thread (executor service)
+
+/// Thread class, Runnbale class (odd, evem print 2 Thread)
+
+/// Future / CompletableFuture ??
+
+/// CompletableFuture - (why it is introduced in java 8) ?
+
+/// Thread safety (video) - volatile, AtomicInteger, synchronized keyword (block, method)
+
+/// Thread safe - singleton class (synchronized)
+
+/// synchrozed vs Reeentrantlock (theory)

@@ -192,6 +192,7 @@ public class _19_streams {
  *      Optional<T> min = stream.min((a, b) -> Integer.compare(a, b));
  *      Optional<T> min = stream.min((a, b) -> Long.compare(a, b));
  *      Optional<T> min = stream.min((a, b) -> Double.compare(a, b));
+ *      max and min Optional<T> return karte hai.
  *
  * (Intermediate) sorted() - sorted me Integer.compare() use karo. baki build in methods hai, us bakchodi se bacho.
  *

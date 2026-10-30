@@ -294,15 +294,5 @@ class BlockedThread {
     }
 }
 
-/// ----------------------------------- Synchronized Keyword -----------------------------------
-/// The Synchronized keyword enforces thread safety where multiple threads run in parallel.
-/// Synchronized ensures that one thread at a time can execute a synchronized block or method.
-
-/// Multithreaded environment - multithreaded environment allows you to process several tasks at the time rather than performing them one by one.
-/// for example two for loop can run at the same time rather than run at one by one. But there might be an issue multiple thread tried to access same resource at the same time. If that happens value doesn't update properly. This situation is called not being thread safe.
-/// this is exactly where synchronized comes in. It ensures that one thread can access critical section at a time.
-/// critical section - Shared resource
-
-
 
 
