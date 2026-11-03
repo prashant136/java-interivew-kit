@@ -1,8 +1,6 @@
 package _04_DSA;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class _2_ArraysTwoPointers {
     private boolean isChar(char c) {
@@ -59,8 +57,34 @@ public class _2_ArraysTwoPointers {
         return null;
     }
 
-    public int threeSum(int[] nums) {
-        return 0;
+    // [1,2,0,1,0,0,0,0]
+    // Output -
+    //[[0,0,0],[0,0,0]]
+    // Expected -
+    //[[0,0,0]]
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+            int l = i + 1, r = nums.length - 1;
+            while (l < r) {
+                int sum = nums[i] + nums[l] + nums[r];
+                if (sum > 0) {
+                    r--;
+                } else if (sum < 0) {
+                    l++;
+                } else {
+                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    l++;
+                    r--;
+                    while (nums[l] == nums[l - 1] && l < r) l++;
+                }
+            }
+        }
+        return res;
     }
 
     private boolean isPalindrome(String str, int l, int r) {
@@ -86,11 +110,47 @@ public class _2_ArraysTwoPointers {
         return true;
     }
 
+    // https://leetcode.com/problems/container-with-most-water/description/
+    public int maxArea(int[] height) {
+        int i = 0, j = height.length - 1;
+        int maxArea = 0;
+
+        while(i < j) {
+            int currentWater = Math.min(height[i], height[j]) * (j - i);
+            maxArea = Math.max(maxArea, currentWater);
+            if(height[i] <= height[j]) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return maxArea;
+    }
+
+    // Kadane's algo -
+    // intuition - if the running sum becomes negative, keeping it will only reduce the sum of any future subarray.
+    // whenever the current sum drops below zero, we reset it and start a new subarray from the next element.
+    public int maxSubArray(int[] nums) {
+        int maxSum = nums[0], currSum = 0;
+        for(int num: nums) {
+            if(currSum < 0) {
+                currSum = 0;
+            }
+            currSum += num;
+            maxSum = Math.max(maxSum, currSum);
+        }
+        return maxSum;
+    }
+
+
     void main() {
         System.out.println("validPalindrome: " + validPalindrome("  Was it a car or a cat I saw?? "));
         System.out.println("twoSumInSortedArray: " + Arrays.toString(twoSumInSortedArrayI(new int[]{1,2,3,4}, 3)));
         System.out.println("twoSumInSortedArray: " + twoSumInSortedArrayII(new int[]{1,2,3,4}, 3));
         System.out.println("three sum:" + threeSum(new int[] {-1,0,1,2,-1,-4}));
         System.out.println("validPalindrome: " + validPalindrome2("abbda"));
+        System.out.println("ContainerWithMostWater: " + maxArea(new int[] {1,8,6,2,5,4,8,3,7}));
+        System.out.println("maximum subArray (kadane algo): " + maxSubArray(new int[] {2,-3,4,-2,2,1,-1,4}));  // 8
+
     }
 }

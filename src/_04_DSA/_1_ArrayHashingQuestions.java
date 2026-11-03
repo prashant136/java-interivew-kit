@@ -369,6 +369,32 @@ public class _1_ArrayHashingQuestions {
         return ' '; // empty character
     }
 
+    // https://leetcode.com/problems/first-missing-positive/
+    public int firstMissingPositiveI(int[] nums) {
+        // [3,4,-1,1] => 2
+        // [1,2,0] => 3
+        // [7,8,9,11,12] => 1
+        // [-2,-1,0] => 1
+
+        // 1. sort the array then iterate and find the missing number - time - O(n*log n), space - O(1)
+        Arrays.sort(nums);
+        int k = 1;
+        for(int num: nums) {
+            if(num > 0 && num == k) {
+                k++;
+            }
+        }
+        return k;
+
+
+        // 2. using boolean array start from 1 -> the biggest number, fill with true then find missing
+    }
+
+    public int firstMissingPositiveII(int[] nums) {
+        // ...use Cycle sort (Important sort)
+        return 0;
+    }
+
     public boolean isSubsequence(String s, String t) {
         int i = 0, j = 0;
         while (i < s.length() && j < t.length()) {
@@ -380,8 +406,6 @@ public class _1_ArrayHashingQuestions {
         return i == s.length();
     }
 
-
-
     void main() {
 
         System.out.println("concatinationOfArray: " + concatinationOfArray(new int[]{1, 4, 1, 2}));
@@ -392,7 +416,7 @@ public class _1_ArrayHashingQuestions {
         System.out.println("longestCommonPrefix: " + longestCommonPrefixI(new String[] {"geeksforgeeks", "geeks", "geek", "geezer"}));  // gee
 //        System.out.println("longestCommonPrefix: " + longestCommonPrefixII(new String[] {"geeksforgeeks", "geeks", "geek", "geezer"}));     // gee
         System.out.println("groupAnagram: " + groupAnagramI(new String[]{"act","pots","tops","cat","stop","hat"}));
-        System.out.println("removeElement: " + removeElement(new int[]{0,1,2,2,3,0,4,2}, 2));       // answer array - [ 0,1,3,0,4 ]
+        System.out.println("removeElement: " + removeElement(new int[]{0,1,2,2,3,0,4,2}, 2));       // answer array - [0,1,3,0,4]
         System.out.println("majorityElement: " + majorityElementI(new int[]{5,5,1,1,1,5,5}));
         System.out.println("majorityElement: " + majorityElementII(new int[]{5,5,1,1,1,5,5}));
 //        System.out.println(majorityElementIII(new int[]{5,5,1,1,1,5,5}));
@@ -410,6 +434,8 @@ public class _1_ArrayHashingQuestions {
             System.out.print(firstUniqueCharacter("neetcodeneet"));
         }
 
+        System.out.println("Find missing number: " + firstMissingPositiveI(new int[] {-2,-1,0}));
+        System.out.println("Find missing number: " + firstMissingPositiveII(new int[] {7,8,9,11,12}));
 
 //
 //        System.out.println(isSubsequence("node", "neetcode"));

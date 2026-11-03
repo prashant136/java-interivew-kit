@@ -1,5 +1,8 @@
 package _01_CoreJava;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 // we have 3 class task1, task2, task3. they are run sequentially. I want to execute these task in parallelly, using multithreading
 class Task1 extends Thread {
     void print() {
@@ -49,7 +52,7 @@ class MultithreadingMain1 {
 //        t3.run();
     }
 }
-
+// https://www.youtube.com/shorts/1YBzRy70DcE [for definition]
 /// How to create thread in Java -  a. extend Thread class  b. implement Runnable interface
 /// 1. start() - it registers a new thread and that new thread internally invokes run() method.
 /// 2. run() - it contains the code to be executed.
@@ -106,6 +109,7 @@ class MultithreadingMain2 {
 
         // we can reduce boilerplate using lambda and method references.
         // no need to do all these stuff. we always do in shorter way using lambda
+        // shortcut of - Runnable interface using a lambda expression.
         Thread t3 = new Thread(() -> {
             System.out.println("Executing task_3 " + Thread.currentThread().getName());
         });
@@ -199,12 +203,13 @@ class MultiThreadingQuestion {
 /// -------------------------------- Thread lifecycle --------------------------------
 /// Thread.currentThread().getState() - return the current state of the thread.
 ///
-/// NEW - Thread is created, it has not been started yet.
-/// RUNNABLE - Thread is ready to run or currently running.
-/// TIMED_WAITING - Thread is waiting for a specified amount of time. (Thread.sleep())
-/// TERMINATED - Thread has finished its execution.
+/// Thread lifecycle describes the different states a thread from its creation to its execution completes
+/// NEW - The thread instance is created using the new keyword, it has not been started yet.
+/// RUNNABLE - The start() method is invoked. The thread is running or the thread is ready to run and wait for CPU to allocate resource.
+/// TIMED_WAITING - Thread is waiting for a specified amount of time(Thread.sleep()). It returns to the runnable state when the time expires.
+/// TERMINATED - The thread has finished executing its run() method or stopped due to exception. A terminated thread cannot be restarted.
 /// WAITING - Thread is waiting indefinity for another thread to perform an action.
-/// BLOCKED - Thread is waiting to acquire a lock held by another thread.
+/// BLOCKED - Thread is waiting to acquire a lock that is currently held by another thread.
 ///
 ///
 class ThreadLifeCycle {
@@ -291,8 +296,177 @@ class BlockedThread {
 
         System.out.println("t1 state: " + t1.getState());
         System.out.println("t2 state: " + t2.getState());   // t2 is in blocked state till t1 will finish its execution.
+
+        t1.join();
+        t2.join();
+    }
+}
+
+/// ---------------------- demon thread ---------------------------
+/// [definition] A Daemon Thread is low-priority background thread that runs in the background to perform supporting tasks.
+/// As soon as all user (non-daemon) threads finish execution, JVM does not wait for demon thread to finish, JVM terminates and kills running daemon threads.
+/// how to enable - thread.setDaemon(true)
+class DaemonTask implements Runnable {
+    @Override
+    public void run() {
+        while (true) {
+            System.out.println("--> [Daemon Thread] Background saving/monitoring data...");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+}
+class UserTask implements Runnable {
+    private String name;
+    private int workTime;
+
+    UserTask(String name, int workTime) {
+        this.name = name;
+        this.workTime = workTime;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(name + " has started working.");
+        try {
+            Thread.sleep(workTime);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println(name + " has finished working.");
+    }
+}
+class DaemonDemo {
+    void main() throws InterruptedException {
+        // Creating 1 Daemon Thread
+        Thread daemonThread = new Thread(new DaemonTask());
+        daemonThread.setDaemon(true);
+        daemonThread.start();
+
+        // Creating 2 User Threads
+        Thread userThread1 = new Thread(new UserTask("User-Thread-1", 1000));
+        Thread userThread2 = new Thread(new UserTask("User-Thread-2", 2000));
+
+        userThread1.start();
+        userThread2.start();
+
+        userThread1.join();
+        userThread2.join();
+
+        System.out.println("Main thread finished its task and exiting...");
     }
 }
 
 
 
+/// -------------------------------------- Inter thread communication ----------------------------------------
+/// [definition] Inter-Thread Communication in Java allows multiple threads to coordinate their execution efficiently when working with shared resources.
+///             Without proper communication, race conditions, data inconsistency, and wasted CPU cycles may occur.
+/// java provides wait(), notify(), notifyAll() methods. these three methods present in Object class.
+///
+/// wait - When a thread calls wait(), it releases the lock on the object and enters the waiting state until another thread invokes notify() or notifyAll() on the same object.
+/// when current thread in waiting state, other threads to acquire the lock and do their task.
+/// notify() - This method wakes up a single thread that is waiting state.
+/// notifyAll() - This method wakes up all threads that are waiting state.
+
+
+// there are 3 version of wait() method -
+// wait(): Pauses the thread indefinitely until another thread calls notify() or notifyAll() on the same object.
+// wait(long timeout): Pauses the thread until notified, or until the specified timeout expires (in milliseconds). whichever happens first.
+// wait(long timeout, int nanos): adding nanosecond for finer control, working is same.
+
+
+/// ------------ wait() and sleep() diff ---------------
+// wait() present in Object class while sleep() present in Thread class.
+// wait() releases the object lock and enters waiting state while sleep() holds the lock (doesn't release).
+// wait() requires notify() / notifyAll() to wake up and sleep() resumes after the specified time expires.
+// wait() must be called under synchronized but sleep() doesn't require synchronization.
+
+class Message {
+    private String message;
+    private boolean hasMessage = false;
+
+    public synchronized void sendMessage(String msg) {
+        while (hasMessage) {  // If a message is already sent, then wait for it to be read
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println("Inside catch block for sendMessage() method");
+            }
+        }
+        this.message = msg;
+        hasMessage = true;
+        System.out.println("Sent: " + msg);
+        notify();  // Notify the receiver thread
+    }
+
+    public synchronized void receiveMessage() {
+        while (!hasMessage) {  // If no message is available, then wait
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                System.out.println("Inside catch block for receiveMessage() method");
+            }
+        }
+        System.out.println("Received: " + message);
+        hasMessage = false;
+        notify();  // Notify the sender thread
+    }
+}
+class WaitNotifyExample {
+    public static void main(String[] args) {
+        Message msg = new Message();
+
+        Thread sender = new Thread(() -> {
+            String[] messages = {
+                    "Hello", "How are you?", "How's your day going?", "Goodbye"
+            };
+
+            for (String m : messages) {
+                msg.sendMessage(m);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Sender");
+
+        Thread receiver = new Thread(() -> {
+            for (int i = 0; i < 4; i++) {
+                msg.receiveMessage();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "Receiver");
+
+        sender.start();
+        receiver.start();
+    }
+}
+
+
+
+/// why functional interface introduced in java 8, type - 4 type
+/// Intermediate statefull, stetefull dono hai, lazily
+/// Terminal terminal op - eager
+
+/// odd, evem print 2 Thread (executor service)
+
+/// Thread class, Runnbale class (odd, evem print 2 Thread)
+
+/// Future / CompletableFuture ??
+
+/// CompletableFuture - (why it is introduced in java 8) ?
+
+/// Thread safety (video) - volatile, AtomicInteger, synchronized keyword (block, method)
+
+/// Thread safe - singleton class (synchronized)
+
+/// synchrozed vs Reeentrantlock (theory)

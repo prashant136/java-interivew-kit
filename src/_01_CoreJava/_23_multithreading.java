@@ -3,11 +3,11 @@ package _01_CoreJava;
 /// --------------------------------- CompletableFuture -----------------------------------
 
 /// introduced in java 8,
-// ExecutorService kya hai? (The Thread Pool Manager)
-// CompletableFuture kya hai? (The Result & Pipeline Handler)
 
 
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * we have some limitations in Future that is Overcome by CompletableFuture -
@@ -20,14 +20,15 @@ import java.util.concurrent.*;
 /**
  * CompletableFuture gets its threads from the forkJoinPool.commonPool() by default.
  *  ????? CompletableFuture ko executor service ke sath kaise use kare aur kyu ???????
- *
- * SupplyAsyc() - execute a task asynchronously. (similar to submit method), It returns CompletableFuture<T>
- *  thenAccept() - consumes the result of the previous task and execute an action after it completes.
- *  thenAccept() - is used when we want to take an input but don't return any output.
- *  thenApply() - is used when we want to take an input as well as return some output.
- *  exceptionally() -
- *
  */
+
+/// [definition] CompletableFuture is a class introduced in (Java 8) used for asynchronous, non-blocking programming. It is used to handle complex multithreading task by chaining task, combining multiple parallel operations, handling error gracefully without locking the main thead gracefully.
+/// Limitation of Future and advantage of CompletableFuture -
+/// 1. Blocking the thread - The only way to get a value from a Future is by calling future.get(), which blocks the calling thread until the computation finishes.
+///     in completable future we have non-blocking method thenApply(), thenAccept() to complete the task without even blocking the current thread.
+/// 2. You cannot chain the callback in Future.
+/// 3. We can't combine the multiple future. future has no way to run multiple future in parallel, combine their results. in CompletableFuture we have thenCombine() to combine multiple future.
+/// 4. No built-in exception in future. we use ExecutionException manually to catch exception. in CompletableFuture we have exceptionally() method to handle exception gracefully.
 
 
 
@@ -129,7 +130,6 @@ class Solution3 {
                 .thenAccept(finalPrice -> System.out.println("finalPrice: " + finalPrice));
 
 
-
     }
     static int getProductPrice() {
         System.out.println("Fetching price");
@@ -142,7 +142,7 @@ class Solution3 {
     }
 }
 
-// in executorService when we throw exception, it will npt throw right way. we will get the exception when we use get() method
+// in executorService when we throw exception, it will not throw right way. we will get the exception when we use get() method
 class Limitation4 {
     void main() throws InterruptedException, ExecutionException {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -190,6 +190,15 @@ class Solution4 {
         System.out.println(future.get());
     }
 }
+
+// SupplyAsyc() - execute a task asynchronously. (similar to submit method), It returns CompletableFuture<T>. it can also take executor service.
+// thenAccept() - takes the result of the previous stage and performs an action with it, but returns CompletableFuture<Void>.
+// thenApply() - takes the result of the previous task and execute an action then return the transformed result. return type CompletableFuture<T>.
+// thenCombine() - method is used to merge the results of two independent/parallel asynchronous tasks.
+// exceptionally() - exceptionally() acts like a catch block. In any stage before if throws an exception, the execution skips normal steps and jumps straight into exceptionally().
+
+
+
 
 
 /// ----------------------------- Volatile Keyword --------------------------------
@@ -246,18 +255,23 @@ class Solution4 {
  */
 
 /// Variable is shared b/w multiple threads, so don't let a thread keep using a stale cached copy.
+/// yaha ek issue thread t2  [ running = false aur count = 1 ] kr de but jo thread t1 me immediate reflect na ho. thoda time lage. (visibility issue)
+/// ek dursa issue reordering issue. running aur count update ho gya but dono alag-alag time pe reflect ho instead of reflecting at same time.
 
 class WithoutVolatileKeyword {
     boolean running = true;
+    int count = 0;
 
     void main() throws InterruptedException {
         Thread t1 = new Thread(() -> {
             while(running) {
                 System.out.println("t1 is running");
             }
+            System.out.println("count:" + count);
         });
 
         Thread t2 = new Thread(() -> {
+            count = 1;
             running = false;
             System.out.println("t1 has finished");
         });
@@ -270,15 +284,18 @@ class WithoutVolatileKeyword {
 
 class VolatileKeyword {
     volatile boolean running = true;
+    volatile int count = 0;
 
     void main() throws InterruptedException {
         Thread t1 = new Thread(() -> {
             while(running) {
                 System.out.println("t1 is running");
             }
+            System.out.println("count:" + count);
         });
 
         Thread t2 = new Thread(() -> {
+            count = 1;
             running = false;
             System.out.println("t1 has finished");
         });
@@ -286,5 +303,76 @@ class VolatileKeyword {
         t1.start();
         Thread.sleep(1000);
         t2.start();
+    }
+}
+
+// concurrent hashmap internal working ?
+// why concurrent hashmap vs synchronizd map ?
+// hashtable va hashmap ?
+// compare swap algo ?
+
+/// --------------------- Atomic integer ----------------------
+// Q:) Atomic Operations (Atomicity) - In a multithreaded environment, an atomic operation cannot be interrupted midway by another thread;
+//  it either completes entirely or does not happen at all. It is ensuring thread-safe operations and preventing race conditions.
+//  It uses Compare and Swap Algo.
+// example - concurrentHashmap, AtomicInteger.
+// 🚩 humein volatile keyword use krne ki need nhi hai. jab hum AtomicInteger jaise use kr rahe hai.
+
+// AtomicInteger methods -
+// 1. get() - get the value
+// 2. set(value) - set value to atomicInteger
+// 3. incrementAndGet() - increment karo phir get {++x)
+// 4. getAndIncrement() - get karo phir increment (x++)
+// 5. decrementAndGet()
+// 6. GetAndDecrement() -
+// 7. AddAndGet(value) - ad kro phir get
+// similarly we have AtomicLong, AtomicDouble, AtomicBoolean
+
+
+/// Q:) What is difference between AtomInteger and synchronized and Volatile ?
+// synchronized - synchronized keyword directly relies on object-level locks (also known as intrinsic locks or monitors).
+//      When a thread enters a synchronized block, it acquires a monitor lock. Other threads are in waiting state until the lock is released.
+//      synchronized involved thread context switching and thread blocking overhead, which can degrade performance. { It guarantees both Visibility + Atomicity }
+// AtomicInteger - unlike synchronization AtomicInteger don't block the entire object. It uses Compare and swap (CAS) Algo to update the value. AtomicInteger is designed specifically for atomic operations on a single variable (like incrementing, decrementing, or updating a counter)
+//      it avoids thread blocking, that makes significantly faster. { It ensures both Visibility + Atomicity }
+// Volatile - It resolve visibility problem. when we declare a variable as volatile, it forces all reads and writes to go directly to Main Memory (RAM) rather than relying on thread-local CPU caches.
+//      this ensures that any update by one thread is instantly visible to all other threads. It doesn't block thread { It only ensure Visibility }
+
+class Counting {
+
+/// --- ye to synchronization hai jisme pura object lock ho jata hai. but atomic operations different hai (Lock free concurrency)
+//    int count = 0;
+//    public synchronized void increment() {
+//        count++;
+//    }
+
+// ---- AtomicInteger ----
+    AtomicInteger count = new AtomicInteger(0);
+    public void increment() {
+        count.incrementAndGet();    // 1
+    }
+}
+class AtomicIntegerDemo {
+    void main() throws InterruptedException {
+        Counting c = new Counting();
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 10000; i++) {
+                c.increment();
+            }
+        });
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 10000; i++) {
+                c.increment();
+            }
+        });
+        t1.start();
+        t2.start();
+
+        Thread.sleep(1000);
+
+        t1.join();
+        t2.join();
+
+        System.out.println(c.count);
     }
 }

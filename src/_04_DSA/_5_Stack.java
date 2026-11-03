@@ -27,8 +27,32 @@ public class _5_Stack {
         return stack.isEmpty();
     }
 
+    // https://leetcode.com/problems/evaluate-reverse-polish-notation/description/
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for (String str : tokens) {
+            if (str.equals("+")) {
+                stack.push(stack.pop() + stack.pop());
+            } else if (str.equals("-")) {       // ["4","3","-"] -> 1
+                int a = stack.pop();
+                int b = stack.pop();
+                stack.push(b - a);
+            } else if (str.equals("*")) {
+                stack.push(stack.pop() * stack.pop());
+            } else if (str.equals("/")) {        // ["4","13","5","/","+"] -> 6
+                int a = stack.pop();
+                int b = stack.pop();
+                stack.push(b / a);
+            } else {
+                stack.push(Integer.parseInt(str));
+            }
+        }
+        return stack.pop();
+    }
+
     void main() {
         System.out.println("valid Parenthesis: " + validParenthesis("([{})])"));
+        System.out.println("evalulate reverse polish notation: " + evalRPN(new String[]{"4","13","5","/","+"})); // 6
     }
 }
 

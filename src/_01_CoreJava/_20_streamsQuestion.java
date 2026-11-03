@@ -654,22 +654,3 @@ class Transaction {
                 '}';
     }
 }
-
-
-/// why functional interface introduced in java 8, type - 4 type
-/// Intermediate statefull, stetefull dono hai, lazily
-/// Terminal terminal op - eager
-
-/// odd, evem print 2 Thread (executor service)
-
-/// Thread class, Runnbale class (odd, evem print 2 Thread)
-
-/// Future / CompletableFuture ??
-
-/// CompletableFuture - (why it is introduced in java 8) ?
-
-/// Thread safety (video) - volatile, AtomicInteger, synchronized keyword (block, method)
-
-/// Thread safe - singleton class (synchronized)
-
-/// synchrozed vs Reeentrantlock (theory)

@@ -5,10 +5,10 @@ import java.util.concurrent.*;
 /// ----------------------------------- Synchronized Keyword -----------------------------------
 /// Multithreaded environment - multithreaded environment allows you to process several tasks at the time rather than performing them one by one.
 ///
-/// The Synchronized keyword ensure thread safety where multiple threads run in parallel.
+/// [definition] The Synchronized keyword ensure thread safety where multiple threads run in parallel. It helps prevent race condition. It ensures that one thread can access critical section at a time.
 /// Synchronized ensures that one thread at a time can execute a synchronized block or method.
-/// this is exactly where synchronized comes in. It ensures that one thread can access critical section at a time.
 /// critical section - Shared resource
+/// [definition] race condition in Java occurs when two or more threads concurrently access and modify a shared resource without proper synchronization.
 class Counter1 {
     int count = 0;
 //    void increment() {        // not thread safe
@@ -48,7 +48,6 @@ class SynchronizedMain {
 
 /// Deadlock - It is situation where two or more thread are permanently blocked because each thread is waiting for other thread to release a lock.
 ///
-
 ///
 /// [Not a deadlock] flow of example 1 -
 /// these are two thread is finished their execution, or they still are in BLOCKED state
@@ -227,7 +226,6 @@ class DeadlockPrevention {
 
 /// --------------------------- RUNNABLE AND CALLABLE ----------------------------
 /// both runnable and callable are functional interfaces.
-/// Question:: Why do we need these interfaces - Both of them represent a task that can be executed inside a Thread.
 class MyTask1 implements Runnable {
     public void print() {
         System.out.println("MyTask1 print: " + Thread.currentThread().getName());
@@ -238,14 +236,14 @@ class MyTask1 implements Runnable {
         print();
     }
 }
-class MyTask2 implements Callable {
+class MyTask2 implements Callable<Integer> {
     public int getValue() {
         System.out.println("Fetching value: " + Thread.currentThread().getName());
         return 100;
     }
 
     @Override
-    public Object call() throws Exception {
+    public Integer call() throws Exception {
         return getValue();
     }
 }
@@ -291,12 +289,36 @@ class RunnableCallableMain {
 /// Callable - call() return some value (Callable is used to execute an async task which returns some result)
 ///   1. call() method return value which is a type Future<T>
 ///   2. Future :: Future ia an interface which holds the result of task. To get value form Future -> just do future.get() method
-
+///
+/// [definition] Both runnable and callable is used to run task using thread. Runnable has run() method for code execution but doesn't return anything.
+///     while callable has call() method which returns Future. (future is interface that hold the result of async task). future.get() used for get the value from future.
 
 
 /// ------------------------------------[ IMPORTANT ] ExecutorService ------------------------------------
-/// ✅ ExecutorService is an interface which we use to create and manage a pool of threads.
+/// Q:) Executor and ExecutorService me difference ?
+///     Executor - Executor is an interface that consists of just one method: execute(Runnable command).
+///             execute() method is executing asynchronous task. It takes a Runnable object as params.
+///     ExecutorService - ExecutorService is sub-interface of Executor. It provides several methods to manage and control the execution of threads.
+///             it has several method like shutdown, submit, shutdownNow(), invokeAny(), invokeAll(), isTerminated() etc.
 ///
+/// Q:)  difference b/w submit and execute ??
+///     execute() - used for executing asynchronous task. execute() method peasant in Executor interface. (take Runnable interface as param) and return noting.
+///     submit() - used for executing asynchronous task. submit() method present in ExecutorService interface. it takes both Runnable and Callable and return Future object.
+///         (The Future object is used to get the task result or to check if the task has finished executing.)
+///
+//      execute() - Runnable as params, return - void
+//      submit() with Runnable - Runnable as params, return - Future<?>.
+//      submit() with Callable - Callable as params, Return - Future<T>.
+///
+/// Q:)  ExecutorService.shutdown() vs shutdownNow() ??
+///     shutdown() -
+///
+///     shutdownNow() -
+///
+/// Q:) Type of Executor ??
+///
+/// ✅ [definition] ExecutorService is an interface which we use to create and manage a pool of threads. Instead of manually creating and managing Thread objects, ExecutorService automatically
+///     managing the thread pool. So that we can resue the thread because creating and destroying threads is expensive operation.
 ///
 /// Question:: Why do we need ExecutorService even if we have Thread class or Runnable ?
 /// Ans:: We just keep on creating thread everytime we need using thread class. threads take memory, so we can't make infinite number of thread.
@@ -434,14 +456,119 @@ class ExecutorServiceMain4 {
     }
 }
 
-/// ----------------------- Summary ----------------------
-// execute() - Runnable as a Parameter, Return type is void, Used for Asynchronous Task.
-// submit() with Runnable - Runnable as a Parameter, Return type is Future<?>, Future can use for waiting, checking or canceling.
-// submit() with Callable - Callable as a Parameter, Return type is Future<T>, Future can use for retrieving result.
 
-// Question: diffrence b/w submit and execute ??
-// Question: executorService.shutdown() ??
+// ---------------- print odd even number using 2 threads ------------------------
+class OddEvenPrinter {
+    private int current = 1;
+    private final int MAX = 10;
+
+    public synchronized void printOdd() {
+        while (current <= MAX) {
+            // Agar number even hai, toh odd thread wait karega
+            if (current % 2 == 0) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } else {
+                System.out.println("Odd Thread: " + current);
+                current++;
+                notify(); // Even thread ko jagayega
+            }
+        }
+    }
+
+    public synchronized void printEven() {
+        while (current <= MAX) {
+            // Agar number odd hai, toh even thread wait karega
+            if (current % 2 != 0) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } else {
+                System.out.println("Even Thread: " + current);
+                current++;
+                notify(); // Odd thread ko jagayega
+            }
+        }
+    }
+}
+class OddEvenTest {
+    public static void main(String[] args) throws InterruptedException {
+        OddEvenPrinter printer = new OddEvenPrinter();
+
+/// ------------ using two threads ---------
+//        Thread t1 = new Thread(() -> printer.printOdd(), "Thread-Odd");
+//        Thread t2 = new Thread(() -> printer.printEven(), "Thread-Even");
+//
+//        t1.start();
+//        t2.start();
+//
+//        t1.join();
+//        t2.join();
+
+/// ----------- using ExecutorService -------------
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        executor.submit(() -> printer.printOdd());
+        executor.submit(() -> printer.printEven());
+        executor.shutdown();
+    }
+}
+
+// -------------- print sum of Arrays ------------
+class ArraySumTask implements Callable<Integer> {
+    private int[] array;
+    private int start;
+    private int end;
+
+    public ArraySumTask(int[] array, int start, int end) {
+        this.array = array;
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    public Integer call() {
+        int sum = 0;
+        for (int i = start; i < end; i++) {
+            sum += array[i];
+        }
+        return sum; // Yeh thread apna sum return karega
+    }
+}
+class CallableArraySumExample {
+    void main() throws InterruptedException, ExecutionException {
+        int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        Future<Integer> future1 = executor.submit(new ArraySumTask(numbers, 0, 5));
+        Future<Integer> future2 = executor.submit(new ArraySumTask(numbers, 5, 10));
+
+        // future1.get() aur future2.get() threads ka result collect karte hain
+        int totalSum = future1.get() + future2.get();
+
+        System.out.println("First half sum: " + future1.get());   // Output: 15
+        System.out.println("Second half sum: " + future2.get());  // Output: 40
+        System.out.println("Total Sum of Array: " + totalSum);    // Output: 55
+
+        // Executor band kar diya
+        executor.shutdown();
+    }
+}
 
 
+// introduction me thoda structure karo. (tech stack ek jagah backend, fornend) phir tyroo me vidtech, freelanching ka bhi bolo.;
+
+// Runnable, callable
+
+// thread class, runnable interface me difference (memory optimizatio)
+
+// CompitableFuture - ??? methods ke naam kya krti hai bs
+
+// ExecutorService ??? -- thode theory based dekh lio.
 
 

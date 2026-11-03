@@ -7,17 +7,36 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-/// ?? functional interface can be implemented using short and concise syntax lambda expressions.
 /// example of FI - Runnable, Callable and many others.
-///
-///  ?? why functional interface is introduced ?
 ///
 /// ?? Collection vs collections ??
 /// Collection is parent interface for various Data structures.
 ///
 /// ?? Stream - it is an interface. It is used to process data. stream doesn't have its own memory. supports functional style program.
 ///
-/// ?? Stream vs streams() -> Stream is interface and stream() is a method present inside Collection Interface. It is used to convert any Collection to Stream.
+/// Q:) Stream vs streams() -> Stream is interface and stream() is a method present inside Collection Interface. It is used to convert any Collection to Stream.
+///
+/// Q:) Why intermediate operations are lazy loaded ?
+/// Intermediate operations are lazy loaded to for performance optimization. Instead of executing immediately, they simply build "pipeline" of tasks and wait until a terminal operation like (collect() or forEach()) is called.
+///
+/// Q:) Terminal Operations ? They trigger the execution of the stream and produce a final result. They are eager in nature.
+///
+/// Q:) What is a Functional Interface ?
+/// A Functional Interface in Java is an interface that contains exactly one abstract method. It can have multiple default or static methods, but only one abstract method.
+///     We can use @FunctionalInterface annotation and acts as the foundation for Lambda Expressions.
+///
+/// Q:) What is a Lambda Expression ?
+/// A Lambda Expression is an anonymous function. A function without a name, return type, or access modifier.
+/// It provides a clear, concise way to implement a Functional Interface without writing boilerplate anonymous inner class code.
+///
+/// Q:) What is Java Streams ?
+/// It is an interface (introduced in java 8). It is used to processing the data. stream doesn't have its own memory. It provides modern and efficient way to write functional style programing in java.
+///
+/// Q:) What is a Method Reference ?
+/// A Method Reference is a shorthand notation for a lambda expression that simply calls an existing method. It makes the code cleaner and more readable using the double colon :: syntax.
+///
+/// Q:) Why function interface is introduced ?
+/// Functional Interfaces were introduced in Java 8 to enable Functional Programming. their main goal is support Lambda Expressions, reduce boilerplate code, and support streams.
 
 class Employee1 {
     int id;

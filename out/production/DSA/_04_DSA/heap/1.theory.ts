@@ -6,7 +6,7 @@
         
         🔷 Rule 1 — Complete Binary Tree
 
-        A $04DSA.heap is always a complete binary tree.
+        A heap is always a complete binary tree.
 
         Meaning:
             All levels are filled except possibly the last level is filled from left to right
