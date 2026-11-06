@@ -270,11 +270,6 @@ public class _1_ArrayHashingQuestions {
         }
         return nums;
     }
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
 
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
@@ -386,14 +381,83 @@ public class _1_ArrayHashingQuestions {
         }
         return k;
 
-
         // 2. using boolean array start from 1 -> the biggest number, fill with true then find missing
     }
 
     public int firstMissingPositiveII(int[] nums) {
-        // ...use Cycle sort (Important sort)
-        return 0;
+        // ...use Cycle sort - in the sorted version index is equal to element.
+        int n = nums.length;
+        int i = 0;
+
+        while (i < n) {
+            if (nums[i] <= 0 || nums[i] > n) {
+                i++;
+                continue;
+            }
+            int index = nums[i] - 1;
+            if (nums[i] != nums[index]) {
+                int temp = nums[i];
+                nums[i] = nums[index];
+                nums[index] = temp;
+            } else {
+                i++;
+            }
+        }
+        // find missing element
+        for (i = 0; i < n; i++) {
+            if(nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n+1;     // if every element is sorted, [1,2,3,4] - 5
     }
+
+    // 🚩Cycle Sort ::
+    // 1. when given number is range from 1....N, use Cycle sort
+    // 2. after sorting we can see, index = value - 1 (because index value is start from zero)
+    // 3. start from beginning, we can check that value should be in right index. if it not then swap with correct indexed value.
+    // example - [3, 5, 2, 1, 4]
+    //              swap 3 with 2 (index 2)
+    //           [2, 5, 3, 1, 4]
+    //              swap 2 with 5 (index 1)
+    //           [5, 2, 3, 1, 4]
+    //              swap 5 with 4 (index 4)
+    //           [4, 2, 3, 1, 5]
+    //              swap 4 with 1 (index 3)
+    //           [1, 2, 3, 4, 5]    ---> array is sorted bro...
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    public int[] cycleSort(int[] nums) {
+        int i = 0;
+        while(i < nums.length) {
+            int correct = nums[i] - 1;
+            if(nums[i] != nums[correct]) {
+                swap(nums, i, correct);
+            } else {
+                i++;
+            }
+        }
+        return nums;
+    }
+
+    // 🚩Counting Sort ::
+    // 1. first find the largest element.
+    // 2. create an array of size largest + 1 (store the frequency of elements)
+    // 3. fill this array with frequencies where index number is element number.
+    // 4. traverse the array, if value of index > 0, it means that index present in my original array.
+    // 5. since index of array is sorted, exact the value one by one and this is the counting sort.
+    // 6. instead of freq. array use hashmap
+    public int[] countingSort(int[] nums) {
+        return null;
+    }
+
+    // 🚩Redix Sort ::
+
+    // 🚩Bucket Sort ::
+
 
     public boolean isSubsequence(String s, String t) {
         int i = 0, j = 0;
@@ -434,8 +498,13 @@ public class _1_ArrayHashingQuestions {
             System.out.print(firstUniqueCharacter("neetcodeneet"));
         }
 
+        System.out.println("Cycle Sort: " + Arrays.toString(cycleSort(new int[] {3, 5, 2, 1, 4})));
         System.out.println("Find missing number: " + firstMissingPositiveI(new int[] {-2,-1,0}));
-        System.out.println("Find missing number: " + firstMissingPositiveII(new int[] {7,8,9,11,12}));
+//        int[] arr = {7,8,9,11,12};  // after sorted [7,8,9,11,12] means 1 is missing
+//        int[] arr = {-2,-1,0};      // after sorted [-2,-1,0] means 1 is missing
+//        int[] arr = {3,4,-1,1};     // after sorted [1,-1,3,4] means 2 is missing
+//        int[] arr = {1,2,0};        // after sorted [1,2,0] means 3 is missing
+        System.out.println("Find missing number(cycle sort): " + firstMissingPositiveII(new int[] {3,4,-1,1}));
 
 //
 //        System.out.println(isSubsequence("node", "neetcode"));
