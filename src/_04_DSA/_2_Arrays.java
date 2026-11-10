@@ -2,7 +2,7 @@ package _04_DSA;
 
 import java.util.*;
 
-public class _2_ArraysTwoPointers {
+public class _2_Arrays {
     private boolean isChar(char c) {
         if(c >= 'a' && c <= 'z') return true;
         if(c >= 'A' && c <= 'Z') return true;
@@ -181,21 +181,6 @@ public class _2_ArraysTwoPointers {
         return maxArea;
     }
 
-    // Kadane's algo -
-    // intuition - if the running sum becomes negative, keeping it will only reduce the sum of any future subarray.
-    // whenever the current sum drops below zero, we reset it and start a new subarray from the next element.
-    public int maxSubArray(int[] nums) {
-        int maxSum = nums[0], currSum = 0;
-        for(int num: nums) {
-            if(currSum < 0) {
-                currSum = 0;
-            }
-            currSum += num;
-            maxSum = Math.max(maxSum, currSum);
-        }
-        return maxSum;
-    }
-
     // https://leetcode.com/problems/remove-duplicates-from-sorted-array/description/
     public int removeDuplicates(int[] nums) {
         int k = 1;
@@ -237,7 +222,6 @@ public class _2_ArraysTwoPointers {
         System.out.println("three sum:" + threeSum(new int[] {-1,0,1,2,-1,-4}));
         System.out.println("validPalindrome: " + validPalindrome2("abbda"));
         System.out.println("ContainerWithMostWater: " + maxArea(new int[] {1,8,6,2,5,4,8,3,7}));
-        System.out.println("maximum subArray (kadane algo): " + maxSubArray(new int[] {2,-3,4,-2,2,1,-1,4}));  // 8
         System.out.println("merge sorted array: " + Arrays.toString(mergeI(new int[]{1, 2, 3, 0, 0, 0}, 3, new int[]{2, 5, 6}, 3)));
 
         System.out.println("merge string alternate: " + mergeAlternately("ab", "abbxxc"));

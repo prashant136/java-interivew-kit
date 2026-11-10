@@ -3,7 +3,7 @@ package _04_DSA;
 
 import java.util.*;
 
-public class _1_ArrayHashingQuestions {
+public class _1_Arrays {
 
     public int[] concatinationOfArray(int[] nums) {
         int n = nums.length;
@@ -511,15 +511,6 @@ public class _1_ArrayHashingQuestions {
 //        System.out.println(isSubsequence("axc", "ahbgdc"));
 //
 //
-//
-//        String str1 = "aabcc";
-//        String str2 = "aabbcc";
-//        char ans = m1(str1);
-//        if(ans == ' ') {
-//            System.out.print("No distinct characters in string");
-//        } else {
-//            System.out.print(ans);
-//        }
 
 
     }
