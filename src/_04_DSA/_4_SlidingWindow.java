@@ -27,7 +27,7 @@ import java.util.*;
 
 public class _4_SlidingWindow {
 
-    // maximum sum of a subarray of size k (no negative)
+    // 1. ----------------- maximum sum of a subarray of size k (no negative) ---------------------
     // arr[] = [100, 200, 300, 400],  k = 2, output - 700
     // arr[] = [1, 4, 2, 10, 23, 3, 1, 0, 20], k = 4, output - 39
     // brute force -
@@ -61,7 +61,7 @@ public class _4_SlidingWindow {
         return ans;
     }
 
-    // Kadane's algo -
+    // 2. -------------------------------- Kadane's algo --------------------------------
     // ===== The maximum subarray sum with both positive and negative numbers is solved using Kadane's Algorithm ====
     // intuition - if the running sum becomes negative, keeping it will only reduce the sum of any future subarray.
     // whenever the current sum drops below zero, we reset it and start a new subarray from the next element.
@@ -77,7 +77,7 @@ public class _4_SlidingWindow {
         return maxSum;
     }
 
-    // array of positive nums and an integer k, return the total number of subarrays whose sum equals to k.
+    // 3. ------------- array of positive nums and an integer k, return the total number of subarrays whose sum equals to k. ----------
     // sliding window
     public int subarraySum(int[] nums, int k) {
         int l = 0, r = 0, res = 0, sum = 0;
@@ -97,10 +97,11 @@ public class _4_SlidingWindow {
         return res;
     }
 
-    // array of (positive, negative) nums and an integer k, return the total number of subarrays whose sum equals to k.
+    // 4. ----------- array of (+ve,-ve) nums and an integer k, return the total number of subarrays whose sum equals to k. -----------
 
 
-    // https://leetcode.com/problems/max-consecutive-ones/
+    //
+    // 5. ----------------------------- [ https://leetcode.com/problems/max-consecutive-ones/ ] ----------------------------
     public int findMaxConsecutiveOnes(int[] nums) {
         int ans = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -116,7 +117,7 @@ public class _4_SlidingWindow {
         return ans;
     }
 
-    // Optimized - O(n)
+    // Optimized - O(n) - using 1 loop
     public int findMaxConsecutiveOnesI(int[] nums) {
         int i = 0, currentCount = 0, ans = 0;
         while (i < nums.length) {
@@ -131,8 +132,8 @@ public class _4_SlidingWindow {
         return Math.max(ans, currentCount);
     }
 
-    // https://leetcode.com/problems/max-consecutive-ones-iii/
-    // brute force O(n2)
+    // 6. ----------------------- [ https://leetcode.com/problems/max-consecutive-ones-iii/ ] --------------------------
+    // brute force O(n2) - using two loop
     public int longestOnes(int[] nums, int k) {
         int ans = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -150,10 +151,73 @@ public class _4_SlidingWindow {
         return ans;
     }
 
-    // sliding window
+    // ---- use sliding window ----- (my own way)
+    // arr = [1,1,1,1,1],  k = 0;   output - 5
+    // arr = [0,0,0,1],    k = 4;   output - 4
+    // arr = [1,1,1,0,0,0,1,1,1,1,0], k = 2; output - 6
     public int longestOnesI(int[] nums, int k) {
-        return 0;
+        int l = 0, r = 0, ans = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        // if there is no zero present in array -
+        while(nums[r] == 1 && r < nums.length) {
+            r++;
+            if(r == nums.length) return nums.length;
+        }
+        // if zeros are there
+        while (r < nums.length) {
+            map.put(nums[r], map.getOrDefault(nums[r], 0) + 1);
+
+            while (map.containsKey(0) && map.get(0) > k) {
+                map.put(nums[l], map.getOrDefault(nums[l], 0) - 1);
+                l++;
+            }
+
+            if (map.containsKey(0) && map.get(0) <= k) {
+                ans = Math.max(ans, (r - l + 1));
+            }
+            r++;
+        }
+        return ans;
     }
+
+    // 7. ---------------------- [ https://leetcode.com/problems/subarray-product-less-than-k/ ]--------------------------
+    // arr = [7,2,7,8,6], k = 1, output = 0;
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if(k <= 0) return 0;
+
+        int l = 0, r = 0, res = 0, product = 1;
+
+        while (r < nums.length) {
+            product *= nums[r];
+
+            while (product >= k) {
+                product /= nums[l];
+                l++;
+            }
+
+            res = res + (r - l + 1);
+            r++;
+        }
+        return res;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -332,34 +396,37 @@ public class _4_SlidingWindow {
 
 
     void main(String[] args) {
-        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeK(new int[]{1, 4, 2, 10, 23, 3, 1, 0, 20}, 4));
-        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{1, 4, 2, 10, 23, 3, 1, 0, 20}, 4));
-        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{2, 3}, 1));
-        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{100, 200, 300, 400}, 2));
+//        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeK(new int[]{1, 4, 2, 10, 23, 3, 1, 0, 20}, 4));
+//        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{1, 4, 2, 10, 23, 3, 1, 0, 20}, 4));
+//        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{2, 3}, 1));
+//        System.out.println("maximum sum of size k (positive): " + maximumSumOfSizeKI(new int[]{100, 200, 300, 400}, 2));
+//
+//        System.out.println("maximum subArray (Kadane algo): " + maxSubArray(new int[] {2,-3,4,-2,2,1,-1,4}));  // 8
+//
+//        System.out.println("find max consecutive ones: " + findMaxConsecutiveOnes(new int[] {1,1,0,1,1,1}));
+//        System.out.println("find max consecutive ones: " + findMaxConsecutiveOnesI(new int[] {1,1,0,1,1,1}));
+//
+//        System.out.println("find max consecutive ones III: " + longestOnes(new int[] {1,1,1,0,0,0,1,1,1,1,0}, 2));
+//        System.out.println("find max consecutive ones III: " + longestOnesI(new int[] {1,1,1,0,0,0,1,1,1,1,0}, 2));
 
-        System.out.println("maximum subArray (Kadane algo): " + maxSubArray(new int[] {2,-3,4,-2,2,1,-1,4}));  // 8
+        System.out.println("total subarray product less than k: " + numSubarrayProductLessThanK(new int[] {10,5,2,6}, 100));
+        System.out.println("total subarray product less than k: " + numSubarrayProductLessThanK(new int[] {1,2,3}, 0));
 
-        System.out.println("find max consecutive ones: " + findMaxConsecutiveOnes(new int[] {1,1,0,1,1,1}));
-        System.out.println("find max consecutive ones: " + findMaxConsecutiveOnesI(new int[] {1,1,0,1,1,1}));
-
-        System.out.println("find max consecutive ones III: " + longestOnes(new int[] {1,1,1,0,0,0,1,1,1,1,0}, 2));
-        System.out.println("find max consecutive ones III: " + longestOnesI(new int[] {1,1,1,0,0,0,1,1,1,1,0}, 2));
-
-        System.out.println("contains duplicates: " + containsNearbyDuplicateI(new int[] {1,2,3,1}, 3));
-        System.out.println("contains duplicates: " + containsNearbyDuplicate(new int[] {1,2,3,1}, 3));
-
-        System.out.println("max profit: " + maxProfit(new int[] {2,1,2,1,0,1,2}));      // 2
-
-        System.out.println("length of longest non repeating substring: " + lengthOfLongestSubstring("abcabcbb"));
-        System.out.println("length of longest non repeating substring: " + lengthOfLongestSubstringII("abcabcbb"));
-
-        System.out.println("longest repeating chareacter replacement: " + characterReplacement("AABABBABB", 1));
-        System.out.println("longest repeating chareacter replacement: " + characterReplacement("AAAA", 2));
-
-        System.out.println("permutation in string: " + checkInclusion("ab", "eidbaooo"));
-        System.out.println("permutation in string: " + checkInclusionI("ab", "eidbaooo"));
-        System.out.println("permutation in string: " + checkInclusionII("ab", "eidbaooo"));
-
-        System.out.println("permutation in string: " + checkInclusionII("aab", "a"));
+//        System.out.println("contains duplicates: " + containsNearbyDuplicateI(new int[] {1,2,3,1}, 3));
+//        System.out.println("contains duplicates: " + containsNearbyDuplicate(new int[] {1,2,3,1}, 3));
+//
+//        System.out.println("max profit: " + maxProfit(new int[] {2,1,2,1,0,1,2}));      // 2
+//
+//        System.out.println("length of longest non repeating substring: " + lengthOfLongestSubstring("abcabcbb"));
+//        System.out.println("length of longest non repeating substring: " + lengthOfLongestSubstringII("abcabcbb"));
+//
+//        System.out.println("longest repeating chareacter replacement: " + characterReplacement("AABABBABB", 1));
+//        System.out.println("longest repeating chareacter replacement: " + characterReplacement("AAAA", 2));
+//
+//        System.out.println("permutation in string: " + checkInclusion("ab", "eidbaooo"));
+//        System.out.println("permutation in string: " + checkInclusionI("ab", "eidbaooo"));
+//        System.out.println("permutation in string: " + checkInclusionII("ab", "eidbaooo"));
+//
+//        System.out.println("permutation in string: " + checkInclusionII("aab", "a"));
     }
 }

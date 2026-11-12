@@ -215,17 +215,64 @@ public class _2_Arrays {
         return nums;
     }
 
+    // To figure out the required time and space complexity from constraints, you can use the 10⁸ Operations Rule. Online judges (like LeetCode)
+    // typically allow roughly 10⁸ simple operations per second before throwing a Time Limit Exceeded (TLE) error.
+    // ---------------------------------- [ https://leetcode.com/problems/subarray-sum-equals-k/ ] ------------------------------------
+    public int subarraySum(int[] nums, int k) {
+        // you can solve brute force way O(n2)
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int sum = 0;
+            for (int j = i; j < nums.length; j++) {
+                sum += nums[j];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    //  🚩Important ::
+    // can't use sliding window { mathematical reason:: Negative Numbers. Sliding Window tabhi kaam karegi jab array ki values monotonic behavior show karein (yani window bada karne par sum hamesha badhe, aur chota karne par sum hamesha ghate }
+    // two pointer only applicable, if we need two points nothing in between (not subarray type)
+    // use prefix sum + hashmap
+    // map structure - { prefix sum: count }
+    public int subarraySumI(int[] nums, int k) {
+        int count = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int sum = 0;
+            for (int j = i; j < nums.length; j++) {
+                sum += nums[j];
+                if (sum == k) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     void main() {
         System.out.println("validPalindrome: " + validPalindrome("  Was it a car or a cat I saw?? "));
+
         System.out.println("twoSumInSortedArray: " + Arrays.toString(twoSumInSortedArrayI(new int[]{1,2,3,4}, 3)));
         System.out.println("twoSumInSortedArray: " + twoSumInSortedArrayII(new int[]{1,2,3,4}, 3));
+
         System.out.println("three sum:" + threeSum(new int[] {-1,0,1,2,-1,-4}));
+
         System.out.println("validPalindrome: " + validPalindrome2("abbda"));
+
         System.out.println("ContainerWithMostWater: " + maxArea(new int[] {1,8,6,2,5,4,8,3,7}));
+
         System.out.println("merge sorted array: " + Arrays.toString(mergeI(new int[]{1, 2, 3, 0, 0, 0}, 3, new int[]{2, 5, 6}, 3)));
 
         System.out.println("merge string alternate: " + mergeAlternately("ab", "abbxxc"));
+
         System.out.println("remove duplicates: " + removeDuplicates(new int[] {0,0,0,1,1,2,2,3,3,4}));
+
         System.out.println("rotate Array: " + Arrays.toString(rotate(new int[] {1,2,3,4,5,6,7}, 3)));
+
+        System.out.println("subarray sum equal to k: " + subarraySum(new int[]{1,-1,0,2,-1,3}, 3));
     }
 }

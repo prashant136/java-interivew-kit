@@ -22,3 +22,54 @@ public class _1_IOC_DI {
  *
  */
 
+
+/// ------------------- Controller and RestController ------------------
+// [Don't say this at interview] Misconception: - @RestController is used for json response and @Controller is used for HTML or JSP response.
+
+// @RestController :-
+// - It return data directly in response body.
+// - No need of ViewResolver
+// - It is combination of @Controller + @ResponseBody
+
+// example -
+//@RestController
+//public class NameController {
+//    @GetMapping
+//    public String getName() {
+//        return "Rahul";   // postman me 'localhost/name' hit -> "Rahul" return hoga.
+//    }
+//}
+
+
+
+
+
+// @Controller -
+// - It return view name. (view could be html, json, jsp)
+// - It use ViewResolver to resolve a template (html or jsp) from view name.
+// - It explicitly use @ResponseBody to bypass ViewResolver and send data directly.
+
+// [definition] ViewResolver - controller return view name, ViewResolver is interface that maps view names to actual view file.
+
+
+// example -
+//@Controller
+//public class NameController {
+//    @GetMapping
+//    public String getName() {
+//        return "Rahul";  ❌ error
+//    }
+//}
+// postman me 'localhost/name' hit -> error 404 (not found). it considers Rahul as view not data. but humare pass koi 'Rahul' naam ka template nhi h like Rahul.html pr Rahul.jsp
+// fix - means resources/templates/ ke andar hum Rahul.html banate hai aur pom.xml me <spring-boot-starter-thymeleaf> dependency dalte h.
+
+
+
+//@Controller
+//@ResponseBody
+//public class NameController {
+//    @GetMapping
+//    public String getName() {
+//        return "Rahul";  //  Yha Rahul as view nhi data h, it works similar to @RestController here.
+//    }
+//}
